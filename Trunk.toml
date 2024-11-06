@@ -1,0 +1,4 @@
+[serve]
+target = "index.html"
+dist = "dist"
+

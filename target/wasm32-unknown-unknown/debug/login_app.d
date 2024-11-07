@@ -1,1 +1,0 @@
-/mnt/c/Users/Nick/Desktop/RustResearch/RustResearch/learning/SimpleLogin/login_app/target/wasm32-unknown-unknown/debug/login_app.wasm: /mnt/c/Users/Nick/Desktop/RustResearch/RustResearch/learning/SimpleLogin/login_app/src/main.rs

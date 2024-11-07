@@ -16,7 +16,7 @@ from collections import defaultdict
 logging.basicConfig(level=logging.INFO)
 
 # Load your custom YOLOv11 model
-model = YOLO("/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/Backend/best.pt", task="detect")
+model = YOLO("./dominosrepo/Backend/best.pt", task="detect")
 
 app = FastAPI()
 
@@ -54,7 +54,7 @@ color_map = {
 }
 
 # Define the absolute path to the external img directory
-external_img_directory = "/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img"  # Replace with your absolute path
+external_img_directory = "./dominosrepo/img"  # Replace with your absolute path
 
 # Ensure the external img directory exists
 if not os.path.exists(external_img_directory):

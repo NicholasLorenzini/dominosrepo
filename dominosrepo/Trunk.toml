@@ -1,0 +1,12 @@
+[serve]
+target = "index.html"
+dist = "dist"
+
+[build]
+dist = "dist"
+public_url = "/"
+
+[[build.copy]]
+source = "static"
+destination = "dist"
+

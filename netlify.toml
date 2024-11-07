@@ -1,0 +1,3 @@
+[build]
+  command = "cargo install trunk && trunk build --release"
+  publish = "dist"

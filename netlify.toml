@@ -1,3 +1,0 @@
-[build]
-  command = "rustup default stable && cargo install trunk && trunk serve --release"
-  publish = "dist"

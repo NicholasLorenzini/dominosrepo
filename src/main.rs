@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{HtmlCanvasElement, HtmlVideoElement, MediaStream, FormData};
+use web_sys::{HtmlCanvasElement, HtmlVideoElement, HtmlInputElement, MediaStream, FormData};
 use yew::prelude::*;
 use gloo_net::http::Request;
 use wasm_bindgen_futures::spawn_local;
@@ -8,6 +8,7 @@ use js_sys::Reflect;
 use serde_json::json;
 use gloo_utils::format::JsValueSerdeExt;
 use serde::Deserialize;
+use regex::Regex;
 
 
 
@@ -204,9 +205,8 @@ let capture_image = {
         })
     };
 
-
     let best_combo_function = {
-        let combo_result = combo_result.clone();      
+        let combo_result = combo_result.clone();
     
         Callback::from(move |_| {
             // Retrieve the input value
@@ -216,29 +216,116 @@ let capture_image = {
                     .dyn_into::<HtmlInputElement>()
                     .unwrap()
                     .value();
-
+    
+                // Debug: Log the retrieved input
+                web_sys::console::log_1(&JsValue::from_str(&format!("Input value: {}", input_value)));
+    
                 // Parse and calculate the best combo
                 let best_combo = calculate_best_combo(&input_value);
-                
+    
+                // Debug: Log the result of calculate_best_combo
+    
                 // Set the result in state
-                combo_result.set(Some(best_combo));
+                combo_result.set(best_combo);
             }
         })
     };
-
-
-
+    
+    fn calculate_best_combo(input: &str) -> Option<String> {
+        // Define the regex pattern for the input format
+        let re = Regex::new(r"^\d+\s(\d+,\d+\s?)+$").unwrap();
+    
+        // Check if the input matches the expected format
+        if !re.is_match(input) {
+            web_sys::console::log_1(&JsValue::from_str("Input format is incorrect"));
+            return Some("Input format is incorrect".to_string());
+        }
+    
+        // Split the input string by whitespace to separate START# from the pairs
+        let mut parts = input.split_whitespace();
+        let start = parts.next().unwrap().parse::<i32>().ok()?;
+        web_sys::console::log_1(&JsValue::from_str(&format!("Start number: {}", start)));
+    
+        // Parse each NUM1,NUM2 pair as a tuple
+        let mut pairs: Vec<(i32, i32)> = Vec::new();
+        for pair_str in parts {
+            let nums: Vec<&str> = pair_str.split(',').collect();
+            if nums.len() == 2 {
+                let num1 = nums[0].parse::<i32>().ok()?;
+                let num2 = nums[1].parse::<i32>().ok()?;
+                pairs.push((num1, num2));
+            }
+        }
+    
+        // Debug: Log the parsed pairs
+        web_sys::console::log_1(&JsValue::from_str(&format!("Parsed pairs: {:?}", pairs)));
+    
+        // Find the longest chain starting from the initial start number
+        let longest_chain = find_longest_chain(start, &pairs, Vec::new());
+    
+        // Debug: Log the longest chain found
+        web_sys::console::log_1(&JsValue::from_str(&format!("Longest chain: {:?}", longest_chain)));
+    
+        // Format the chain as a string
+        let mut formatted_chain = String::from("[");
+        for (i, &(num1, num2)) in longest_chain.iter().enumerate() {
+            if i > 0 {
+                formatted_chain.push_str(", ");
+            }
+            formatted_chain.push_str(&format!("[{}, {}]", num1, num2));
+        }
+        formatted_chain.push(']');
+    
+        Some(formatted_chain)
+    }
+    
+    fn find_longest_chain(start: i32, pairs: &[(i32, i32)], current_chain: Vec<(i32, i32)>) -> Vec<(i32, i32)> {
+        let mut longest_chain = current_chain.clone();
+    
+        for (index, &next_pair) in pairs.iter().enumerate() {
+            if next_pair.0 == start || next_pair.1 == start {
+                // Calculate the next starting point
+                let next_start = if next_pair.0 == start { next_pair.1 } else { next_pair.0 };
+    
+                // Ensure the pair is in the format [start, next_start]
+                let ordered_pair = if next_pair.0 == start {
+                    (next_pair.0, next_pair.1)
+                } else {
+                    (next_pair.1, next_pair.0)
+                };
+    
+                // Remove the current pair and recursively find the next chain
+                let mut remaining_pairs = pairs.to_vec();
+                remaining_pairs.remove(index);
+    
+                // Recurse with the updated starting point and chain
+                let mut new_chain = current_chain.clone();
+                new_chain.push(ordered_pair);
+                let candidate_chain = find_longest_chain(next_start, &remaining_pairs, new_chain);
+    
+                // Update the longest chain if the new candidate is longer
+                if candidate_chain.len() > longest_chain.len() {
+                    longest_chain = candidate_chain;
+                }
+            }
+        }
+    
+        // Debug: Log the current longest chain at this recursion level
+        web_sys::console::log_1(&JsValue::from_str(&format!("Current longest chain for start {}: {:?}", start, longest_chain)));
+        //test 1 3,1 4,1 5,1 5,4 3,2 12,1 3,12
+        longest_chain
+    }
 
 
 
 
     html! {
-        <div class="flex flex-col items-center h-screen py-[10vh] px-6 space-y-6" style="background-color: rgb(198, 237, 245);">
-    
+        <div class="flex flex-col items-center h-screen py-[10vh] px-6 space-y-6 text-white" style="background-color: rgb(48, 47, 54);">
+        
             <div class="flex justify-center w-full h-[45vh]">
                 <video ref={video_ref} class="border-4 rounded" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;"></video>
             </div>
-    
+        
             <div class="flex flex-col items-center space-y-6 w-full px-6">
                 <div class="flex flex-row items-center space-x-4">
                     <button class="px-10 py-6 bg-green-500 text-white text-4xl font-bold rounded-lg shadow-md hover:bg-green-700" onclick={request_camera}>
@@ -249,7 +336,7 @@ let capture_image = {
                     </button>
     
                     if let Some(url) = &*processed_image_url {
-                        <button class="px-10 py-6 bg-blue-500 text-white text-4xl font-bold rounded-lg shadow-md hover:bg-blue-700" onclick={add_dominos}>
+                        <button class="px-10 py-6 text-white text-4xl font-bold rounded-lg shadow-md hover:opacity-90" style="background-color: rgb(194, 130, 58);" onclick={add_dominos}>
                             { "Add Dominos" }
                         </button>
                     }
@@ -262,23 +349,26 @@ let capture_image = {
                 // New section with user input and "Best Combo" button
                 <div class="flex flex-row items-center space-x-4 mt-4 w-full px-6">
                     
-                    <input type="text" class="text-2xl p-4 border border-gray-300 rounded-lg w-full" placeholder="Enter value here..." />
+                    <input type="text" id="combo_input" class="text-2xl p-4 border border-gray-300 rounded-lg w-full bg-gray-800 text-white" placeholder="Enter value here..." />
                     <button class="px-8 py-4 bg-purple-500 text-white text-2xl font-bold rounded-lg shadow-md hover:bg-purple-700" onclick={best_combo_function}>
                         { "Best Combo" }
                     </button>
                 </div>
+                if let Some(combo) = &*combo_result {
+                    <p class="text-3xl font-bold">{ format!("Best Combo: {}", combo) }</p>
+                }
+    
             </div>
     
             if let Some(url) = &*processed_image_url {
                 <div class="flex justify-center w-full h-[45vh]">
-                    <img class="border-4 border-gray-300 rounded" style="width: 90vw; height: 100%; object-fit: cover; object-position: center;" src={url.clone()} alt="Processed Image" />
+                    <img class="border-4 border--300 rounded" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
                 </div>
             }
     
             <canvas ref={canvas_ref} class="hidden"></canvas>
         </div>
     }
-    
 
 }
 

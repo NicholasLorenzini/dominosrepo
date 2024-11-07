@@ -14,6 +14,7 @@ web-sys = { version = "0.3", features = [
     "HtmlVideoElement", 
     "HtmlCanvasElement",
     "HtmlImageElement", 
+    "HtmlInputElement",
     "CanvasRenderingContext2d", 
     "Navigator",                
     "MediaDevices",             
@@ -28,3 +29,4 @@ console_log = "0.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 gloo-file = "0.2"
+regex = "1"

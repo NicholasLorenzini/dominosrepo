@@ -323,7 +323,7 @@ let capture_image = {
         <div class="flex flex-col items-center h-screen py-[10vh] px-6 space-y-6 text-white" style="background-color: rgb(48, 47, 54);">
         
             <div class="flex justify-center w-full h-[45vh]">
-                <video ref={video_ref} class="border-4 rounded" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;"></video>
+                <video ref={video_ref} class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;"></video>
             </div>
         
             <div class="flex flex-col items-center space-y-6 w-full px-6">
@@ -346,7 +346,7 @@ let capture_image = {
                     <p class="text-4xl font-bold">{ format!("Total Count = {}", *total_count) }</p>
                 }
                 <p class="text-2xl font-bold"> { "Enter In Form: START# NUM1,NUM2 SPACE NUM1,NUM2... ex: 1 3,1 12,0" } </p>
-                // New section with user input and "Best Combo" button
+                
                 <div class="flex flex-row items-center space-x-4 mt-4 w-full px-6">
                     
                     <input type="text" id="combo_input" class="text-2xl p-4 border border-gray-300 rounded-lg w-full bg-gray-800 text-white" placeholder="Enter value here..." />
@@ -362,15 +362,14 @@ let capture_image = {
     
             if let Some(url) = &*processed_image_url {
                 <div class="flex justify-center w-full h-[45vh]">
-                    <img class="border-4 border--300 rounded" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
+                    <img class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
                 </div>
             }
     
             <canvas ref={canvas_ref} class="hidden"></canvas>
         </div>
     }
-
-}
+}    
 
 #[wasm_bindgen(start)]
 pub fn run_app() {

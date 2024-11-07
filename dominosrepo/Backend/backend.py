@@ -16,13 +16,13 @@ from collections import defaultdict
 logging.basicConfig(level=logging.INFO)
 
 # Load your custom YOLOv11 model
-model = YOLO("/opt/render/project/src/dominos/Backend/best.pt", task="detect")
+model = YOLO("/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/Backend/best.pt", task="detect")
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://dominohelper.netlify.app/"],  # List the allowed origins (your frontend URL)
+    allow_origins=["http://127.0.0.1:8080"],  # List the allowed origins (your frontend URL)
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (POST, GET, etc.)
     allow_headers=["*"],  # Allow all headers
@@ -53,11 +53,8 @@ color_map = {
     'blank': (49, 51, 50)       # Black
 }
 
-
-
-
 # Define the absolute path to the external img directory
-external_img_directory = "/opt/render/project/src/dominos/img"  # Replace with your absolute path
+external_img_directory = "/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img"  # Replace with your absolute path
 
 # Ensure the external img directory exists
 if not os.path.exists(external_img_directory):
@@ -190,7 +187,6 @@ async def delete_image(filename: str):
 
 # Mount the external img directory to serve static files
 app.mount("/external-img", StaticFiles(directory=external_img_directory), name="external-img")
-
 
 
 # To run the server:

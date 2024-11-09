@@ -82,7 +82,7 @@ let capture_image = {
     Callback::from(move |_| {
         if let Some(url) = (*processed_image_url).clone() {
             if let Some(filename) = url.split('/').last().map(String::from) {
-                let delete_url = format!("https://dominosbackend.onrender.com/delete-image?filename={}", filename);
+                let delete_url = format!("http://192.168.0.55:8000/delete-image?filename={}", filename);
                 
                 // Debugging: Print the delete URL
                 web_sys::console::log_1(&JsValue::from_str(&format!("Attempting to delete image at URL: {}", delete_url)));
@@ -128,7 +128,7 @@ let capture_image = {
             form_data.append_with_blob("file", &blob).unwrap();
 
             spawn_local(async move {
-                let response = Request::post("https://dominosbackend.onrender.com/process-image")
+                let response = Request::post("http://192.168.0.55:8000/process-image")
                     .header("Accept", "application/json")
                     .body(form_data)
                     .unwrap()

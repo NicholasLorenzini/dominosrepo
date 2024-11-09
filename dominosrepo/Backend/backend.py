@@ -13,13 +13,12 @@ import cv2
 from collections import defaultdict
 
 
-###### YOU DONT NEED TO CHANGE ANYTHING IN THE FRONT END, JUST SERVE THE URL OF THE IMG THAT IS IN THE BACKEND IMG FOLDER!
-
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
 
 # Load your custom YOLOv11 model
-model = YOLO("/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/Backend/best.pt", task="detect")
+model = YOLO(r"C:\Users\Nick\Desktop\Dominos\dominosrepo\Backend\best.pt", task="detect")
+#/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/Backend/best.pt
 
 app = FastAPI()
 
@@ -57,8 +56,8 @@ color_map = {
 }
 
 # Define the absolute path to the external img directory
-external_img_directory = "/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img"
-
+external_img_directory = r"C:\Users\Nick\Desktop\Dominos\dominosrepo\img"
+#/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img
 # Ensure the external img directory exists
 if not os.path.exists(external_img_directory):
     os.makedirs(external_img_directory)
@@ -192,6 +191,7 @@ app.mount("/external-img", StaticFiles(directory=external_img_directory), name="
 
 # To run the server:
 # uvicorn backend:app --reload
-# uvicorn backend:app --host 0.0.0.0 --port $PORT 
+# uvicorn backend:app --host 0.0.0.0 --port 8000
 #/opt/render/project/src/img
 #/opt/render/project/src/img
+# 192.168.0.55

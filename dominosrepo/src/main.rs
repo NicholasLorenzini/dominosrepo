@@ -80,6 +80,7 @@ let capture_image = {
     let detections = detections.clone(); // Clone the `detections` state here
 
     Callback::from(move |_| {
+        /* 
         if let Some(url) = (*processed_image_url).clone() {
             if let Some(filename) = url.split('/').last().map(String::from) {
                 let delete_url = format!("https://3788-70-190-110-222.ngrok-free.app/delete-image?filename={}", filename);
@@ -103,7 +104,7 @@ let capture_image = {
                 });
             }
         }
-
+        */
         let video_element = video_ref.cast::<HtmlVideoElement>().unwrap();
         let canvas_element = canvas_ref.cast::<HtmlCanvasElement>().unwrap();
         let canvas_context = canvas_element
@@ -146,6 +147,10 @@ let capture_image = {
                                         web_sys::console::log_1(&JsValue::from_str(&format!(
                                             "Detection - Label: {}",
                                             detection.label
+                                        )));
+                                        web_sys::console::log_1(&JsValue::from_str(&format!(
+                                            "URL returned by backend: {}",
+                                            api_response.url
                                         )));
                                     }
                                     web_sys::console::log_1(&JsValue::from_str(&format!("Detections: {}", api_response.detections.len())));

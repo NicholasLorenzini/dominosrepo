@@ -24,10 +24,13 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8080", "https://dominohelper.netlify.app/"],  # List the allowed origins (your frontend URL)
+    allow_origins=[
+        "https://dominohelper.netlify.app",
+        "https://3788-70-190-110-222.ngrok-free.app"  # Add your Ngrok URL
+    ],
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (POST, GET, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Define the label mapping and color mapping
@@ -159,7 +162,7 @@ async def process_image(file: UploadFile = File(...)):
         logging.info(f"Processed image saved to {filepath}")
 
         # Prepare the response with URL, detections, and counts
-        image_url = f"http://localhost:8000/external-img/{filename}"
+        image_url = f"https://3788-70-190-110-222.ngrok-free.app/external-img/{filename}"
         logging.info(f"Generated image URL: {image_url}")
         return JSONResponse(content={
             "url": image_url,
@@ -195,3 +198,4 @@ app.mount("/external-img", StaticFiles(directory=external_img_directory), name="
 #/opt/render/project/src/img
 #/opt/render/project/src/img
 # 192.168.0.55
+# python -m uvicorn backend:app --host 0.0.0.0 --port 8000

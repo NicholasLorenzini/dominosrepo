@@ -12,6 +12,9 @@ import uuid
 import cv2
 from collections import defaultdict
 
+
+###### YOU DONT NEED TO CHANGE ANYTHING IN THE FRONT END, JUST SERVE THE URL OF THE IMG THAT IS IN THE BACKEND IMG FOLDER!
+
 # Set up basic logging
 logging.basicConfig(level=logging.INFO)
 
@@ -22,7 +25,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:8080"],  # List the allowed origins (your frontend URL)
+    allow_origins=["http://127.0.0.1:8080", "https://dominohelper.netlify.app/"],  # List the allowed origins (your frontend URL)
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (POST, GET, etc.)
     allow_headers=["*"],  # Allow all headers
@@ -54,7 +57,7 @@ color_map = {
 }
 
 # Define the absolute path to the external img directory
-external_img_directory = "/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img"  # Replace with your absolute path
+external_img_directory = "/mnt/c/Users/Nick/Desktop/Dominos/dominosrepo/img"
 
 # Ensure the external img directory exists
 if not os.path.exists(external_img_directory):
@@ -144,7 +147,6 @@ async def process_image(file: UploadFile = File(...)):
                     cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, font_thickness
                 )
 
-
         # Convert the modified numpy array back to a PIL image
         image_pil = Image.fromarray(image_np)
 
@@ -159,19 +161,18 @@ async def process_image(file: UploadFile = File(...)):
 
         # Prepare the response with URL, detections, and counts
         image_url = f"http://localhost:8000/external-img/{filename}"
-        logging.info(f"Generated image URL: {image_url}")  # Debug log for image URL
+        logging.info(f"Generated image URL: {image_url}")
         return JSONResponse(content={
             "url": image_url,
             "detections": detections,
-            "counts": label_counts  # Include label counts in the response
+            "counts": label_counts
         })
 
     except Exception as e:
         logging.error(f"Error processing image: {str(e)}")
-        # Return a consistent JSON structure with empty fields in case of an error
         return JSONResponse(content={
             "error": str(e),
-            "url": "",  # Ensure URL field is present in error case
+            "url": "",
             "detections": [],
             "counts": {}
         })
@@ -191,3 +192,6 @@ app.mount("/external-img", StaticFiles(directory=external_img_directory), name="
 
 # To run the server:
 # uvicorn backend:app --reload
+# uvicorn backend:app --host 0.0.0.0 --port $PORT 
+#/opt/render/project/src/img
+#/opt/render/project/src/img

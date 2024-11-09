@@ -45,7 +45,9 @@ fn app() -> Html {
             let media_devices = navigator.media_devices().unwrap();
 
             let constraints = JsValue::from_serde(&json!({
-                "video": true
+                "video": {
+                    "facingMode": "environment"  // Specifies the back camera
+                }
             })).unwrap();
 
             let promise = Reflect::get(&media_devices, &JsValue::from_str("getUserMedia"))
@@ -325,12 +327,16 @@ let capture_image = {
 
 
     html! {
-        <div class="flex flex-col items-center h-screen py-[10vh] px-6 space-y-6 text-white" style="background-color: rgb(48, 47, 54);">
-        
+        <div class="flex flex-col items-center min-h-screen py-[10vh] px-6 space-y-6 text-white"
+             style="background-color: rgb(48, 47, 54); width: 100vw; overflow-x: hidden;">
+            
             <div class="flex justify-center w-full h-[45vh]">
-                <video ref={video_ref} class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;"></video>
+                <video ref={video_ref} autoplay=true muted=true playsinline=true 
+                       class="border-4 rounded-lg"
+                       style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;">
+                </video>
             </div>
-        
+            
             <div class="flex flex-col items-center space-y-6 w-full px-6">
                 <div class="flex flex-row items-center space-x-4">
                     <button class="px-10 py-6 bg-green-500 text-white text-4xl font-bold rounded-lg shadow-md hover:bg-green-700" onclick={request_camera}>

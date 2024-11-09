@@ -24,10 +24,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://dominohelper.netlify.app",
-        "https://3788-70-190-110-222.ngrok-free.app"  # Add your Ngrok URL
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -373,7 +373,7 @@ let capture_image = {
     
             if let Some(url) = &*processed_image_url {
                 <div class="flex justify-center w-full h-[45vh]">
-                    <img class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
+                    <img crossorigin="anonymous" class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
                 </div>
             }
     

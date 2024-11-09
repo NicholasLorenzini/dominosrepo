@@ -4,4 +4,7 @@ Pillow
 ultralytics
 opencv-python-headless
 numpy
+<<<<<<< HEAD
 python-multipart
+=======
+>>>>>>> 68c72bab4a36315b7ec6a3da55a8acd584de669a

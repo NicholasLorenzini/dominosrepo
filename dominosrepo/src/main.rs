@@ -368,10 +368,16 @@ let capture_image = {
                 if let Some(combo) = &*combo_result {
                     <p class="text-3xl font-bold">{ format!("Best Combo: {}", combo) }</p>
                 }
-    
             </div>
-    
+                
             if let Some(url) = &*processed_image_url {
+                
+                <a href={url.clone()} target="_blank" 
+                   class="text-blue-400 underline font-bold text-3xl p-4 bg-gray-700 rounded-lg mb-4"
+                   style="display: inline-block;">
+                    { "Click here to view the image in a new tab" }
+                </a>
+    
                 <div class="flex justify-center w-full h-[45vh]">
                     <img crossorigin="anonymous" class="border-4 rounded-lg" style="width: 90vw; height: 100%; object-fit: cover; object-position: center; border-color: black;" src={url.clone()} alt="Processed Image" />
                 </div>

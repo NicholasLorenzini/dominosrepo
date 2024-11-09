@@ -153,7 +153,7 @@ async def process_image(file: UploadFile = File(...)):
         logging.info(f"Processed image saved to {filepath}")
 
         # Prepare the response with URL, detections, and counts
-        image_url = f"https://3788-70-190-110-222.ngrok-free.app/external-img/{filename}"
+        image_url = f"https://5ecb-70-190-110-222.ngrok-free.app/external-img/{filename}"
         logging.info(f"Generated image URL: {image_url}")
         return JSONResponse(content={
             "url": image_url,

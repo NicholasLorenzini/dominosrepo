@@ -131,7 +131,7 @@ let capture_image = {
             form_data.append_with_blob("file", &blob).unwrap();
 
             spawn_local(async move {
-                let response = Request::post("https://3788-70-190-110-222.ngrok-free.app/process-image")
+                let response = Request::post("https://5ecb-70-190-110-222.ngrok-free.app/process-image")
                     .header("ngrok-skip-browser-warning", "true")
                     .header("Accept", "application/json")
                     .body(form_data)
